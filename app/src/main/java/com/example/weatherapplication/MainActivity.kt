@@ -34,10 +34,6 @@ class MainActivity : AppCompatActivity() {
 
 
         val client = WeatherAPIClient.getClient()
-        client.getCurrentWeather(12.5F, 13.5F)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it -> Log.d("WTF", "$it") }
 
         client.getForecast(12.5F, 13.5F)
             .subscribeOn(Schedulers.io())

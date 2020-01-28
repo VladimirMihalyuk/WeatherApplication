@@ -1,8 +1,6 @@
 package com.example.weatherapplication.network.data
 
-
 import com.google.gson.annotations.SerializedName
-
 
 data class Main(
 
@@ -12,20 +10,11 @@ data class Main(
 	@field:SerializedName("temp_min")
 	val tempMin: Double? = null,
 
-	@field:SerializedName("grnd_level")
-	val grndLevel: Int? = null,
-
-	@field:SerializedName("temp_kf")
-	val tempKf: Double? = null,
-
 	@field:SerializedName("humidity")
 	val humidity: Int? = null,
 
 	@field:SerializedName("pressure")
 	val pressure: Int? = null,
-
-	@field:SerializedName("sea_level")
-	val seaLevel: Int? = null,
 
 	@field:SerializedName("feels_like")
 	val feelsLike: Double? = null,
