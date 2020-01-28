@@ -2,10 +2,14 @@ package com.example.weatherapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.weatherapplication.network.WeatherAPIClient
 import com.google.android.material.tabs.TabLayoutMediator
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +31,18 @@ class MainActivity : AppCompatActivity() {
             tab.setIcon(tabIcons[position])
             viewPager.setCurrentItem(tab.position, true)
         }.attach()
+
+
+        val client = WeatherAPIClient.getClient()
+        client.getCurrentWeather(12.5F, 13.5F)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { it -> Log.d("WTF", "$it") }
+
+        client.getForecast(12.5F, 13.5F)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { it -> Log.d("WTF", "$it") }
     }
 
 
