@@ -1,4 +1,4 @@
-package com.example.weatherapplication
+package com.example.weatherapplication.todayWeather
 
 
 import android.content.Intent
@@ -9,16 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.weatherapplication.R
+import com.example.weatherapplication.kelvinToCelsius
 import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
+import com.example.weatherapplication.windDegreeToDirection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_today.view.*
 
 
-class TodayFragment : Fragment() {
+class TodayFragment : Fragment(), TodayView {
 
-    private val roundDegree = 360.0
     lateinit var bigPicture: ImageView
     lateinit var city: TextView
     lateinit var temperature: TextView
@@ -29,7 +31,7 @@ class TodayFragment : Fragment() {
     lateinit var pressure: TextView
 
 
-    var weather: CurrentWeather? = null
+    private lateinit var presenter: TodayPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,26 +48,19 @@ class TodayFragment : Fragment() {
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
 
-        val client = WeatherAPIClient.getClient()
-        val disposable = client.getCurrentWeather(-74.8F, 3.38F)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it ->
-                run {
-                    fillViews(it)
-                    weather = it
-                }
-            }
+        presenter = TodayPresenter(this, -74.8F, 3.38F)
 
+        presenter.loadCurrentWeather()
 
         view.share.setOnClickListener {
-            shareAsText(weather)
+            presenter.shareAsText()
         }
 
         return view
     }
 
-    fun fillViews(currentWeather: CurrentWeather){
+
+    override fun fillViews(currentWeather: CurrentWeather){
         val resourceId = context?.resources?.
             getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
                 "drawable", context?.packageName)!!
@@ -84,28 +79,18 @@ class TodayFragment : Fragment() {
         windDirection.text = "${windDegreeToDirection(currentWeather.wind?.deg ?: 0)}"
     }
 
-    val directions = listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
-    fun windDegreeToDirection(degree: Int): String  =
-        directions[((degree % roundDegree)  / (roundDegree / directions.size)). toInt()]
-
-
-    fun shareAsText(currentWeather: CurrentWeather?){
-        weather?.let {
-            val text = "Current temperature at ${currentWeather?.name} " +
-                    "is ${currentWeather?.main?.temp?.kelvinToCelsius()}°C. " +
-                    "${currentWeather?.weather?.getOrNull(0)?.main}"
-            val sendIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, text)
-                type = "text/plain"
-            }
-
-            val shareIntent = Intent.createChooser(sendIntent, null)
-            startActivity(shareIntent)
+    override fun shareAsText(text: String){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
         }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
-    fun Double?.kelvinToCelsius() = (this?.toInt() ?: 273) - 273
-
-
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
 }

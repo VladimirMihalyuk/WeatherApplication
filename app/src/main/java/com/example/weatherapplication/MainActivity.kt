@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.weatherapplication.network.WeatherAPIClient
+import com.example.weatherapplication.todayWeather.TodayFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
