@@ -1,6 +1,7 @@
 package com.example.weatherapplication
 
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_today.view.*
 
 
 class TodayFragment : Fragment() {
@@ -25,6 +27,9 @@ class TodayFragment : Fragment() {
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
+
+
+    var weather: CurrentWeather? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +50,18 @@ class TodayFragment : Fragment() {
         val disposable = client.getCurrentWeather(-74.8F, 3.38F)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it -> fillViews(it) }
+            .subscribe { it ->
+                run {
+                    fillViews(it)
+                    weather = it
+                }
+            }
+
+
+        view.share.setOnClickListener {
+            shareAsText(weather)
+        }
+
         return view
     }
 
@@ -54,8 +70,8 @@ class TodayFragment : Fragment() {
             getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
                 "drawable", context?.packageName)!!
         bigPicture.setImageResource(resourceId)
-        city.text = "${currentWeather.name}, ${currentWeather.sys?.country}"
-        val temperatureValue = (currentWeather.main?.temp?.toInt() ?: 273) - 273
+        city.text = "${currentWeather?.name}, ${currentWeather?.sys?.country}"
+        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius()
         temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
         humidity.text = "${currentWeather.main?.humidity}%"
 
@@ -73,6 +89,23 @@ class TodayFragment : Fragment() {
         directions[((degree % roundDegree)  / (roundDegree / directions.size)). toInt()]
 
 
+    fun shareAsText(currentWeather: CurrentWeather?){
+        weather?.let {
+            val text = "Current temperature at ${currentWeather?.name} " +
+                    "is ${currentWeather?.main?.temp?.kelvinToCelsius()}°C. " +
+                    "${currentWeather?.weather?.getOrNull(0)?.main}"
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, text)
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
+    }
+
+    fun Double?.kelvinToCelsius() = (this?.toInt() ?: 273) - 273
 
 
 }
