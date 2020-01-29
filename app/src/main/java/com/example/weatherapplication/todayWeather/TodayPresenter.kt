@@ -1,6 +1,7 @@
 package com.example.weatherapplication.todayWeather
 
 import com.example.weatherapplication.BasePresenter
+import com.example.weatherapplication.isInternetAvailable
 import com.example.weatherapplication.kelvinToCelsius
 import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
@@ -16,16 +17,21 @@ class TodayPresenter(private var view: TodayView?,
 
     private val client = WeatherAPIClient.getClient()
     fun loadCurrentWeather(){
-        val disposable = client.getCurrentWeather(longitude, latitude)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { weather ->
-                    view?.fillViews(weather)
-                    currentWeather = weather  },
-                { error ->
-                    view?.showErrorMessage() }
-            )
+        if(isInternetAvailable(view?.getContextOfView())){
+            val disposable = client.getCurrentWeather(longitude, latitude)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { weather ->
+                        view?.fillViews(weather)
+                        currentWeather = weather  },
+                    { error ->
+                        view?.showErrorMessage("Serever error") }
+                )
+        } else {
+            view?.showErrorMessage("Please turn on internet connection and try again")
+        }
+
     }
 
     fun shareAsText(){

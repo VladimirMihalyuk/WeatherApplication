@@ -1,8 +1,11 @@
 package com.example.weatherapplication.todayWeather
 
 
+import android.content.Context
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +13,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.weatherapplication.R
 import com.example.weatherapplication.kelvinToCelsius
-import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
 import com.example.weatherapplication.windDegreeToDirection
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_today.view.*
-
+import com.example.weatherapplication.isInternetAvailable
 
 class TodayFragment : Fragment(), TodayView {
 
@@ -31,6 +32,7 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
+
 
 
     private lateinit var presenter: TodayPresenter
@@ -50,14 +52,7 @@ class TodayFragment : Fragment(), TodayView {
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
 
-
-
-        presenter = TodayPresenter(this, -74.8F, 1113.38F)
-
-
-        presenter.loadCurrentWeather()
-
-
+        presenter = TodayPresenter(this, -74.8F, 13.38F)
 
         view.share.setOnClickListener {
             presenter.shareAsText()
@@ -66,8 +61,13 @@ class TodayFragment : Fragment(), TodayView {
         return view
     }
 
-    override fun showErrorMessage() {
-        Snackbar.make(bigPicture, R.string.error, Snackbar.LENGTH_LONG).show()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        presenter.loadCurrentWeather()
+    }
+
+    override fun showErrorMessage(text: String) {
+        Snackbar.make(bigPicture, text, Snackbar.LENGTH_LONG).show()
     }
 
     override fun fillViews(currentWeather: CurrentWeather){
@@ -97,6 +97,10 @@ class TodayFragment : Fragment(), TodayView {
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
+    }
+
+    override fun getContextOfView(): Context? {
+        return super.getContext()
     }
 
     override fun onDestroy() {
