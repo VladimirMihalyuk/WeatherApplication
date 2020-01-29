@@ -55,12 +55,12 @@
         android:id="@+id/imageView3"
         android:layout_width="@dimen/small_icon_width"
         android:layout_height="@dimen/small_icon_height"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/water_outline"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -126,6 +126,26 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView5"
         tools:text="20 km/h" />
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="@dimen/width_of_line"
+        android:layout_height="2dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/silver_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="@dimen/width_of_line"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/silver_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/windDirection" />
+
     <TextView
         android:id="@+id/precipitation"
         android:layout_width="wrap_content"
@@ -152,11 +172,11 @@
         android:id="@+id/share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:text="@string/share"
         android:textColor="#FF5722"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/windDirection" />
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,9 +14,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 
-/**
- * A simple [Fragment] subclass.
- */
 class TodayFragment : Fragment() {
 
     private val roundDegree = 360.0
@@ -72,13 +69,10 @@ class TodayFragment : Fragment() {
     }
 
     val directions = listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
-    fun windDegreeToDirection(degree: Int): String {
-        return if(degree == 360){
-            directions[0]
-        } else{
-            directions[(degree  / (roundDegree / directions.size)). toInt()]
-        }
+    fun windDegreeToDirection(degree: Int): String  =
+        directions[((degree % roundDegree)  / (roundDegree / directions.size)). toInt()]
 
-    }
+
+
 
 }
