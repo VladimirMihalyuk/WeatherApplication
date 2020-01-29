@@ -11,4 +11,6 @@ interface TodayView {
     fun showErrorMessage(text: String)
 
     fun getContextOfView(): Context?
+
+    fun stopShowLoading()
 }

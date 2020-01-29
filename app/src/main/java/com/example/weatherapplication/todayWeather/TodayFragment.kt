@@ -3,7 +3,6 @@ package com.example.weatherapplication.todayWeather
 
 import android.content.Context
 import android.content.Intent
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,15 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getSystemService
-import com.example.weatherapplication.R
-import com.example.weatherapplication.kelvinToCelsius
+import com.example.weatherapplication.*
 import com.example.weatherapplication.network.data.CurrentWeather
-import com.example.weatherapplication.windDegreeToDirection
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_today.view.*
-import com.example.weatherapplication.isInternetAvailable
 
 class TodayFragment : Fragment(), TodayView {
 
@@ -32,7 +26,6 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
-
 
 
     private lateinit var presenter: TodayPresenter
@@ -52,11 +45,14 @@ class TodayFragment : Fragment(), TodayView {
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
 
-        presenter = TodayPresenter(this, -74.8F, 13.38F)
+
+        presenter = TodayPresenter(this, 30.3449F, 53.9168F)
 
         view.share.setOnClickListener {
             presenter.shareAsText()
         }
+
+
 
         return view
     }
@@ -64,6 +60,9 @@ class TodayFragment : Fragment(), TodayView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         presenter.loadCurrentWeather()
+        (activity as MainActivity).refreshingEvents.subscribe{it ->
+            if(it){presenter.loadCurrentWeather()
+            Log.d("WTF", "$it")}}
     }
 
     override fun showErrorMessage(text: String) {
@@ -106,5 +105,10 @@ class TodayFragment : Fragment(), TodayView {
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
+    }
+
+    override fun stopShowLoading() {
+        (activity as MainActivity).stopShowingRefreshing()
+
     }
 }
