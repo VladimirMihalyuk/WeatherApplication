@@ -4,6 +4,7 @@ import com.example.weatherapplication.BasePresenter
 import com.example.weatherapplication.kelvinToCelsius
 import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -12,17 +13,19 @@ class TodayPresenter(private var view: TodayView?,
                      private val latitude: Float) : BasePresenter {
 
     private var currentWeather: CurrentWeather? = null
+
     private val client = WeatherAPIClient.getClient()
     fun loadCurrentWeather(){
         val disposable = client.getCurrentWeather(longitude, latitude)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it ->
-                run {
-                    view?.fillViews(it)
-                    currentWeather = it
-                }
-            }
+            .subscribe(
+                { weather ->
+                    view?.fillViews(weather)
+                    currentWeather = weather  },
+                { error ->
+                    view?.showErrorMessage() }
+            )
     }
 
     fun shareAsText(){
