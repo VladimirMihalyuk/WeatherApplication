@@ -6,10 +6,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun Double?.kelvinToCelsius() = (this?.toInt() ?: 273) - 273
-
 
 private val roundDegree = 360.0
 val directions = listOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
@@ -49,3 +51,14 @@ fun isInternetAvailable(context: Context?): Boolean {
     return result
 }
 
+val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+fun String.convertToDate(): Date = format.parse(this)!!
+
+
+//need to note hardcode lcoale
+val sdf = SimpleDateFormat("EEEE", Locale("en"))
+fun Date.getDayOfWeek(): String = sdf.format(this ).toUpperCase()
+
+val formatOfTime = SimpleDateFormat("HH:mm")
+fun Date.getHoursAsString() = formatOfTime.format(this)

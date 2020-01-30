@@ -61,8 +61,7 @@ class TodayFragment : Fragment(), TodayView {
         super.onActivityCreated(savedInstanceState)
         presenter.loadCurrentWeather()
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadCurrentWeather()
-            Log.d("WTF", "$it")}}
+            if(it){presenter.loadCurrentWeather() }}
     }
 
     override fun showErrorMessage(text: String) {
@@ -75,7 +74,7 @@ class TodayFragment : Fragment(), TodayView {
                 "drawable", context?.packageName)!!
         bigPicture.setImageResource(resourceId)
         city.text = "${currentWeather?.name}, ${currentWeather?.sys?.country}"
-        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius()
+        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius() ?: 0
         temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
         humidity.text = "${currentWeather.main?.humidity}%"
 

@@ -27,11 +27,12 @@ class TodayPresenter(private var view: TodayView?,
                         currentWeather = weather
                         view?.stopShowLoading()},
                     { error ->
-                        view?.showErrorMessage("Serever error")
+                        view?.showErrorMessage("Server error")
                         view?.stopShowLoading()}
                 )
         } else {
             view?.showErrorMessage("Please turn on internet connection and try again")
+            view?.stopShowLoading()
         }
 
     }

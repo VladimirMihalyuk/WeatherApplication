@@ -9,14 +9,15 @@ import com.example.weatherapplication.todayWeather.TodayFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.util.*
-import io.reactivex.Observable
+import com.example.weatherapplication.forecast.ForecastFragment
 import io.reactivex.subjects.PublishSubject
 
 class MainActivity : AppCompatActivity() {
 
 
-    private val listOfFragment = listOf(TodayFragment(), ForecastFragment() )
+    private val listOfFragment = listOf(TodayFragment(),
+        ForecastFragment()
+    )
     private val tabTitles = listOf("Today", "Forecast")
     private val tabIcons = listOf(R.drawable.wb_sunny_24px, R.drawable.weather_partly_rainy)
 
