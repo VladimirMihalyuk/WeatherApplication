@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">WeatherApplication</string>
+    <string name="app_name">Weather \nApplication</string>
     <string name="today">Today</string>
     <string name="forecast">Forecast</string>
+    <string name="error">Something wrong with server</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="share">Share</string>
 </resources>

@@ -2,7 +2,6 @@ package com.example.weatherapplication.network.data
 
 import com.google.gson.annotations.SerializedName
 
-
 data class CurrentWeather(
 
 	@field:SerializedName("visibility")
@@ -13,6 +12,12 @@ data class CurrentWeather(
 
 	@field:SerializedName("main")
 	val main: Main? = null,
+
+	@field:SerializedName("rain")
+	val rain: Rain? = null,
+
+	@field:SerializedName("snow")
+	val snow: Snow? = null,
 
 	@field:SerializedName("clouds")
 	val clouds: Clouds? = null,
