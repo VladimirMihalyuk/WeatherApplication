@@ -1,4 +1,4 @@
-package com.example.weatherapplication.forecast
+package com.example.weatherapplication.forecast.adapter
 
 import android.content.Context
 import android.util.Log
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.R
 
 class ForecastAdapter(private var list: List<ForecastListItem>,
-                   private var context: Context) : RecyclerView.Adapter<DefaultViewHolder>() {
+                      private var context: Context) : RecyclerView.Adapter<DefaultViewHolder>() {
 
     override fun getItemCount()= list.size
 

@@ -1,4 +1,4 @@
-package com.example.weatherapplication.forecast
+package com.example.weatherapplication.forecast.adapter
 
 import android.util.Log
 import android.view.View
@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.R
+import com.example.weatherapplication.forecast.ForecastModel
 import com.example.weatherapplication.getHoursAsString
 
 class DefaultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,7 +19,7 @@ class DefaultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
 
-    fun setElement(element:ForecastModel, idOfImage:Int){
+    fun setElement(element: ForecastModel, idOfImage:Int){
         val image = viewMap[R.id.imageView] as ImageView
         image.setImageResource(idOfImage)
         val degree = viewMap[R.id.temperature] as TextView

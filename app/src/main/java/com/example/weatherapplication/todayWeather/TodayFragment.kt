@@ -61,8 +61,7 @@ class TodayFragment : Fragment(), TodayView {
         super.onActivityCreated(savedInstanceState)
         presenter.loadCurrentWeather()
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadCurrentWeather()
-            Log.d("WTF", "$it")}}
+            if(it){presenter.loadCurrentWeather() }}
     }
 
     override fun showErrorMessage(text: String) {
