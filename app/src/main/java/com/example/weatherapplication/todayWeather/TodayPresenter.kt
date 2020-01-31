@@ -20,18 +20,21 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
         if(isInternetAvailable(view?.getContextOfView())){
             task?.let{
                 task.addOnSuccessListener {location ->
-                    client.getCurrentWeather(location.longitude.toFloat(), location.latitude.toFloat())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { weather ->
-                                view?.fillViews(weather)
-                                currentWeather = weather
-                                view?.stopShowLoading()},
-                            { error ->
-                                view?.showErrorMessage("Server error")
-                                view?.stopShowLoading()}
-                        )
+                    if(location != null){
+                        client.getCurrentWeather(location.longitude.toFloat(), location.latitude.toFloat())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                { weather ->
+                                    view?.fillViews(weather)
+                                    currentWeather = weather
+                                    view?.stopShowLoading()},
+                                { error ->
+                                    view?.showErrorMessage("Server error")
+                                    view?.stopShowLoading()}
+                            )
+                    }
+
                 }
             }
 

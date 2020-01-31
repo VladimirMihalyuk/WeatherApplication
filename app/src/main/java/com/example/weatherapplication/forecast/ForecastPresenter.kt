@@ -19,17 +19,19 @@ class ForecastPresenter(private var view: ForecastView?) : BasePresenter {
         if(isInternetAvailable(view?.getContextOfView())){
             task?.let{
                 task.addOnSuccessListener { location ->
-                    client.getForecast(location.longitude.toFloat(), location.latitude.toFloat())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                            { forecast ->
-                                view?.updateList(forecast.toListOfModels().toListWithHeaders())
-                                view?.stopShowLoading()},
-                            { error ->
-                                view?.showErrorMessage("Server error")
-                                view?.stopShowLoading() }
-                        )
+                    if(location != null){
+                        client.getForecast(location.longitude.toFloat(), location.latitude.toFloat())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                { forecast ->
+                                    view?.updateList(forecast.toListOfModels().toListWithHeaders())
+                                    view?.stopShowLoading()},
+                                { error ->
+                                    view?.showErrorMessage("Server error")
+                                    view?.stopShowLoading() }
+                            )
+                    }
                 }
             }
 
