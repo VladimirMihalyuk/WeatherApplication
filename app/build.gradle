@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -58,4 +60,12 @@ dependencies {
 
     //recyclerview
     implementation 'com.android.support:recyclerview-v7:29.0.0'
+
+    //PermissionsDispatcher library
+    implementation "org.permissionsdispatcher:permissionsdispatcher:4.6.0"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.6.0"
+
+
+    //location service
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

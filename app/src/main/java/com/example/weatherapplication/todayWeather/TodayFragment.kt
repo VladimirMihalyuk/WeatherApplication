@@ -46,7 +46,7 @@ class TodayFragment : Fragment(), TodayView {
         pressure = view.findViewById(R.id.pressure)
 
 
-        presenter = TodayPresenter(this, 30.3449F, 53.9168F)
+        presenter = TodayPresenter(this)
 
         view.share.setOnClickListener {
             presenter.shareAsText()
@@ -59,9 +59,9 @@ class TodayFragment : Fragment(), TodayView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter.loadCurrentWeather()
+        presenter.loadCurrentWeather((activity as MainActivity).location)
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadCurrentWeather() }}
+            if(it){presenter.loadCurrentWeather((activity as MainActivity).location) }}
     }
 
     override fun showErrorMessage(text: String) {

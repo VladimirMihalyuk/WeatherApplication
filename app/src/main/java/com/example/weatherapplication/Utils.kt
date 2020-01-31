@@ -2,6 +2,7 @@ package com.example.weatherapplication
 
 
 import android.content.Context
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
@@ -62,3 +63,16 @@ fun Date.getDayOfWeek(): String = sdf.format(this ).toUpperCase()
 
 val formatOfTime = SimpleDateFormat("HH:mm")
 fun Date.getHoursAsString() = formatOfTime.format(this)
+
+fun isLocationAvailable(context: Context?): Boolean {
+    var result = false
+    context?.let{
+        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        try{
+            result = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        } catch (e: Exception){
+            result = false
+        }
+    }
+    return result
+}
