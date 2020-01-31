@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="#2196F3"
+            android:textColor="@color/blue"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="@+id/city"
             app:layout_constraintStart_toStartOf="@+id/city"
@@ -172,13 +172,15 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView4"
             tools:text="1019 hPa" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/share"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="#FF5722"
+            android:theme="@style/Button.White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view2" />

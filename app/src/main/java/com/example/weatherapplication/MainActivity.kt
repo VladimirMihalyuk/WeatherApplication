@@ -83,12 +83,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
-
-
     @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
-    fun showRationaleForPhoneCall(request: PermissionRequest) {
+    fun showRationale(request: PermissionRequest) {
         AlertDialog.Builder(this)
             .setTitle("Geolocation permission")
             .setMessage("Need your location for work")
