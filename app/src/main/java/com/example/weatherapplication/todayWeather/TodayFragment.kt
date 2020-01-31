@@ -51,9 +51,6 @@ class TodayFragment : Fragment(), TodayView {
         view.share.setOnClickListener {
             presenter.shareAsText()
         }
-
-
-
         return view
     }
 

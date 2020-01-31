@@ -25,21 +25,21 @@ class ForecastPresenter(private var view: ForecastView?) : BasePresenter {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 { forecast ->
-                                    view?.updateList(forecast.toListOfModels().toListWithHeaders())
-                                    view?.stopShowLoading()},
+                                    view?.updateList(forecast.toListOfModels().toListWithHeaders())},
                                 { error ->
-                                    view?.showErrorMessage("Server error")
-                                    view?.stopShowLoading() }
+                                    view?.showErrorMessage("Server error") }
                             )
+                    }else{
+                        view?.showErrorMessage("Probably the GPS can not locate you")
                     }
                 }
             }
 
         } else {
             view?.showErrorMessage("Please turn on internet connection and try again")
-            view?.stopShowLoading()
-        }
 
+        }
+        view?.stopShowLoading()
 
     }
 

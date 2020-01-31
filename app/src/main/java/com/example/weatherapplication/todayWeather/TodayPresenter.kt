@@ -1,6 +1,7 @@
 package com.example.weatherapplication.todayWeather
 
 import android.location.Location
+import android.util.Log
 import com.example.weatherapplication.BasePresenter
 import com.example.weatherapplication.isInternetAvailable
 import com.example.weatherapplication.kelvinToCelsius
@@ -27,12 +28,12 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
                             .subscribe(
                                 { weather ->
                                     view?.fillViews(weather)
-                                    currentWeather = weather
-                                    view?.stopShowLoading()},
+                                    currentWeather = weather },
                                 { error ->
-                                    view?.showErrorMessage("Server error")
-                                    view?.stopShowLoading()}
+                                    view?.showErrorMessage("Server error") }
                             )
+                    }else{
+                        view?.showErrorMessage("Probably the GPS can not locate you")
                     }
 
                 }
@@ -40,8 +41,8 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
 
         } else {
             view?.showErrorMessage("Please turn on internet connection and try again")
-            view?.stopShowLoading()
         }
+        view?.stopShowLoading()
 
     }
 
