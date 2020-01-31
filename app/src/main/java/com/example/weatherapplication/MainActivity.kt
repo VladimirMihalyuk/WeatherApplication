@@ -6,7 +6,6 @@ import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -19,10 +18,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import io.reactivex.subjects.PublishSubject
 import androidx.appcompat.app.AlertDialog
-import permissions.dispatcher.*
 import android.provider.Settings
 import android.view.View
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
+import permissions.dispatcher.*
 
 @RuntimePermissions
 class MainActivity : AppCompatActivity() {
@@ -31,12 +31,16 @@ class MainActivity : AppCompatActivity() {
     private val listOfFragment = listOf(TodayFragment(),
         ForecastFragment()
     )
+
     private val tabTitles = listOf("Today", "Forecast")
     private val tabIcons = listOf(R.drawable.wb_sunny_24px, R.drawable.weather_partly_rainy)
 
 
     private lateinit var swipeLayout:SwipeRefreshLayout
     var refreshingEvents: PublishSubject<Boolean> = PublishSubject.create()
+
+
+    var location: Task<Location>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,25 +60,32 @@ class MainActivity : AppCompatActivity() {
 
 
         swipeLayout.setOnRefreshListener {
+            getLocationFromServiceWithPermissionCheck()
             refreshingEvents.onNext(true)
         }
 
-        getLocationWithPermissionCheck()
+        getLocationFromServiceWithPermissionCheck()
     }
 
     fun stopShowingRefreshing() {
         swipeLayout.isRefreshing = false
     }
 
-
     @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
-    fun getLocation(){
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-                Log.d("WTF", "$location")
-            }
+    fun getLocationFromService(){
+        if(isLocationAvailable(this)){
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            location = fusedLocationClient.lastLocation
+        } else {
+            showSnackBar()
+        }
+
     }
+
+
+
+
 
     @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
     fun showRationaleForPhoneCall(request: PermissionRequest) {
@@ -88,19 +99,24 @@ class MainActivity : AppCompatActivity() {
 
     @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
     fun onCameraDenied() {
-        showSnackBar()
+        showSnackBarWithAction()
     }
 
     @OnNeverAskAgain(Manifest.permission.ACCESS_COARSE_LOCATION)
     fun onCameraNeverAskAgain() {
-        showSnackBar()
+        showSnackBarWithAction()
     }
 
-    fun showSnackBar(){
+    private fun showSnackBarWithAction(){
         val mySnackbar = Snackbar.make(swipeLayout, "Please open settings and turn on permission",
             Snackbar.LENGTH_LONG)
         mySnackbar.setAction("Open", OpenSettings())
         mySnackbar.show()
+    }
+
+    private fun showSnackBar(){
+        Snackbar.make(swipeLayout, "Please turn on GPS",
+            Snackbar.LENGTH_LONG).show()
     }
 
 
@@ -116,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        getLocationWithPermissionCheck()
+        getLocationFromServiceWithPermissionCheck()
     }
 
 

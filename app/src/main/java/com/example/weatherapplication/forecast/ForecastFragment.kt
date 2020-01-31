@@ -38,7 +38,7 @@ class ForecastFragment : Fragment(), ForecastView {
         list = view.findViewById(R.id.list)
 
         adapter = ForecastAdapter(startList, context!!)
-        presenter = ForecastPresenter(this, 30.3449F, 53.9168F)
+        presenter = ForecastPresenter(this)
 
         list.adapter = adapter
         return view
@@ -48,10 +48,10 @@ class ForecastFragment : Fragment(), ForecastView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        presenter.loadData()
+        presenter.loadData((activity as MainActivity).location)
 
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadData() }}
+            if(it){presenter.loadData((activity as MainActivity).location)  }}
 
     }
 
