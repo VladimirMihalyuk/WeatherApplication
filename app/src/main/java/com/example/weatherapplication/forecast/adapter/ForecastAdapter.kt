@@ -8,7 +8,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.R
 
-class ForecastAdapter(private var list: List<ForecastListItem>,
+import androidx.recyclerview.widget.DiffUtil
+
+
+
+
+class ForecastAdapter(private var list: MutableList<ForecastListItem>,
                       private var context: Context) : RecyclerView.Adapter<DefaultViewHolder>() {
 
     override fun getItemCount()= list.size
@@ -25,7 +30,7 @@ class ForecastAdapter(private var list: List<ForecastListItem>,
             if(row.model != null){
                 val id = context.resources?.
                     getIdentifier("i" + row.model!!.icon,
-                        "drawable", context?.packageName)!!
+                        "drawable", context.packageName)!!
                 holder.setElement(row.model!!, id)
             }
 
@@ -44,6 +49,43 @@ class ForecastAdapter(private var list: List<ForecastListItem>,
             else -> layoutInflater.inflate(R.layout.header_of_list_item, parent,false)
         }
         return DefaultViewHolder(inflatedView)
+    }
+
+
+    fun updateList( newList: List<ForecastListItem>){
+        val diffUtilCallback = DiffUtilCallback(this.list, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
+
+        this.list.clear()
+        this.list.addAll(newList)
+        diffResult.dispatchUpdatesTo(this)
+
+    }
+
+    private inner class DiffUtilCallback(
+        private val oldList: List<ForecastListItem>,
+        private val newList: List<ForecastListItem>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldList[oldItemPosition]
+            val new = newList[newItemPosition]
+            return old == new
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldList[oldItemPosition]
+            val new = newList[newItemPosition]
+            return old == new
+        }
     }
 
 }

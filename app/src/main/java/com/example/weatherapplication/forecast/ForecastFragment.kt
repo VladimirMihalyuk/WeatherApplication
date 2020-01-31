@@ -56,8 +56,7 @@ class ForecastFragment : Fragment(), ForecastView {
     }
 
     override fun updateList(list: List<ForecastListItem>){
-        startList.addAll(list)
-        adapter.notifyDataSetChanged()
+        adapter.updateList(list)
     }
 
     override fun stopShowLoading() {
