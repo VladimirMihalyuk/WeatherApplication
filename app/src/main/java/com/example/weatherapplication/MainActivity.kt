@@ -20,6 +20,7 @@ import io.reactivex.subjects.PublishSubject
 import androidx.appcompat.app.AlertDialog
 import android.provider.Settings
 import android.view.View
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import permissions.dispatcher.*
@@ -31,6 +32,12 @@ class MainActivity : AppCompatActivity() {
     private val listOfFragment = listOf(TodayFragment(),
         ForecastFragment()
     )
+
+    private val listOfTitles = mutableListOf("Today", "Today")
+
+    fun updateTitle(string: String){
+        listOfTitles[1] = string
+    }
 
     private val tabTitles = listOf("Today", "Forecast")
     private val tabIcons = listOf(R.drawable.wb_sunny_24px, R.drawable.weather_partly_rainy)
@@ -51,6 +58,11 @@ class MainActivity : AppCompatActivity() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                toolbar_title.setText(listOfTitles[position])
+            }
+        })
 
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             tab.text = tabTitles[position]

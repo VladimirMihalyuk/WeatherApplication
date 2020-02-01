@@ -70,7 +70,8 @@ class TodayFragment : Fragment(), TodayView {
             getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
                 "drawable", context?.packageName)!!
         bigPicture.setImageResource(resourceId)
-        city.text = "${currentWeather?.name}, ${currentWeather?.sys?.country}"
+        (activity as MainActivity).updateTitle(currentWeather.name ?: "")
+        city.text = "${currentWeather.name}, ${currentWeather?.sys?.country}"
         val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius() ?: 0
         temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
         humidity.text = "${currentWeather.main?.humidity}%"
