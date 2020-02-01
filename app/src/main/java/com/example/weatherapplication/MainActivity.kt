@@ -14,13 +14,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapplication.forecast.ForecastFragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import io.reactivex.subjects.PublishSubject
 import androidx.appcompat.app.AlertDialog
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import permissions.dispatcher.*
@@ -29,6 +29,7 @@ import permissions.dispatcher.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationInterractor: LocationDeviceInteractor
     private val listOfFragment = listOf(TodayFragment(),
         ForecastFragment()
     )
@@ -64,6 +65,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        locationInterractor = LocationDeviceInteractor(this)
+
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             tab.text = tabTitles[position]
             tab.setIcon(tabIcons[position])
@@ -77,6 +80,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         getLocationFromServiceWithPermissionCheck()
+
+
+        locationInterractor.getLocation().subscribe(
+            {
+                    location -> Log.d("WTF", "Location: $location")
+            },
+            {
+                    it -> Log.d("WTF", "Error: $it")
+            }
+        )
     }
 
     fun stopShowingRefreshing() {
@@ -87,8 +100,11 @@ class MainActivity : AppCompatActivity() {
     fun getLocationFromService(){
         if(isLocationAvailable(this)){
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
             location = fusedLocationClient.lastLocation
+
+
+
+
         } else {
             showSnackBar()
         }
@@ -141,13 +157,14 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         getLocationFromServiceWithPermissionCheck()
+        refreshingEvents.onNext(true)
     }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         onRequestPermissionsResult(requestCode, grantResults)
+        refreshingEvents.onNext(true)
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
