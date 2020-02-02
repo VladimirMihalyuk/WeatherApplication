@@ -3,12 +3,14 @@ package com.example.weatherapplication.todayWeather
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.weatherapplication.*
@@ -26,8 +28,7 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
-
-
+    lateinit var loading: FrameLayout
     private lateinit var presenter: TodayPresenter
 
     override fun onCreateView(
@@ -44,6 +45,7 @@ class TodayFragment : Fragment(), TodayView {
         windSpeed = view.findViewById(R.id.windSpeed)
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
+        loading = view.findViewById(R.id.loading)
 
 
         presenter = TodayPresenter(this)
@@ -51,41 +53,24 @@ class TodayFragment : Fragment(), TodayView {
         view.share.setOnClickListener {
             presenter.shareAsText()
         }
-
-
-
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        startShowLoadingScreen()
         presenter.loadCurrentWeather((activity as MainActivity).location)
+
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadCurrentWeather((activity as MainActivity).location) }}
+            if(it){presenter.updateCurrentWeather((activity as MainActivity).location) }}
     }
 
     override fun showErrorMessage(text: String) {
         Snackbar.make(bigPicture, text, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun fillViews(currentWeather: CurrentWeather){
-        val resourceId = context?.resources?.
-            getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
-                "drawable", context?.packageName)!!
-        bigPicture.setImageResource(resourceId)
-        city.text = "${currentWeather?.name}, ${currentWeather?.sys?.country}"
-        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius() ?: 0
-        temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
-        humidity.text = "${currentWeather.main?.humidity}%"
 
-        val precipitationValue = ((currentWeather.snow?.threeHours ?:0.0) +
-                (currentWeather.rain?.threeHours ?: 0.0))
-        precipitation.text = "${Math.round(precipitationValue * 10.0) / 10.0 } mm"
-        pressure.text =  "${currentWeather.main?.pressure} hPa"
-        var speedValue = ((currentWeather.wind?.speed ?: 0.0) * 3.6).toInt()
-        windSpeed.text = "${speedValue} km/h"
-        windDirection.text = "${windDegreeToDirection(currentWeather.wind?.deg ?: 0)}"
-    }
 
     override fun shareAsText(text: String){
         val sendIntent: Intent = Intent().apply {
@@ -101,13 +86,41 @@ class TodayFragment : Fragment(), TodayView {
         return super.getContext()
     }
 
+    override fun fillViews(currentWeather: CurrentWeather){
+        val resourceId = context?.resources?.
+            getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
+                "drawable", context?.packageName)!!
+        bigPicture.setImageResource(resourceId)
+        (activity as MainActivity).updateTitle(currentWeather.name ?: "")
+        city.text = "${currentWeather.name}, ${currentWeather?.sys?.country}"
+        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius() ?: 0
+        temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
+        humidity.text = "${currentWeather.main?.humidity}%"
+
+        val precipitationValue = ((currentWeather.snow?.threeHours ?:0.0) +
+                (currentWeather.rain?.threeHours ?: 0.0))
+        precipitation.text = "${Math.round(precipitationValue * 10.0) / 10.0 } mm"
+        pressure.text =  "${currentWeather.main?.pressure} hPa"
+        var speedValue = ((currentWeather.wind?.speed ?: 0.0) * 3.6).toInt()
+        windSpeed.text = "${speedValue} km/h"
+        windDirection.text = "${windDegreeToDirection(currentWeather.wind?.deg ?: 0)}"
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
     }
 
-    override fun stopShowLoading() {
+    override fun stopShowUpdating() {
         (activity as MainActivity).stopShowingRefreshing()
+    }
 
+    override fun startShowLoadingScreen() {
+        loading.visibility = View.VISIBLE
+
+    }
+
+    override fun stopShowLoadingScreen() {
+        loading.visibility = View.INVISIBLE
     }
 }

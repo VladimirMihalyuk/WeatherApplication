@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.MainActivity
 import com.example.weatherapplication.R
@@ -28,7 +29,9 @@ class ForecastFragment : Fragment(), ForecastView {
     val startList = mutableListOf<ForecastListItem>()
     private lateinit var adapter: ForecastAdapter
     private lateinit var presenter: ForecastPresenter
-    private lateinit var list: RecyclerView
+    lateinit var list: RecyclerView
+    lateinit var loading:FrameLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +39,7 @@ class ForecastFragment : Fragment(), ForecastView {
         val view = inflater.inflate(R.layout.fragment_forecast, container, false)
 
         list = view.findViewById(R.id.list)
+        loading = view.findViewById(R.id.loading)
 
         adapter = ForecastAdapter(startList, context!!)
         presenter = ForecastPresenter(this)
@@ -48,10 +52,11 @@ class ForecastFragment : Fragment(), ForecastView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        presenter.loadData((activity as MainActivity).location)
+        startShowLoadingScreen()
+        presenter.loadCurrentWeather((activity as MainActivity).location)
 
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadData((activity as MainActivity).location)  }}
+            if(it){presenter.updateCurrentWeather((activity as MainActivity).location)  }}
 
     }
 
@@ -59,7 +64,7 @@ class ForecastFragment : Fragment(), ForecastView {
         adapter.updateList(list)
     }
 
-    override fun stopShowLoading() {
+    override fun stopShowUpdating() {
         (activity as MainActivity).stopShowingRefreshing()
     }
 
@@ -74,6 +79,15 @@ class ForecastFragment : Fragment(), ForecastView {
 
     override fun showErrorMessage(text: String) {
         Snackbar.make(list, text, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun startShowLoadingScreen() {
+        loading.visibility = View.VISIBLE
+
+    }
+
+    override fun stopShowLoadingScreen() {
+        loading.visibility = View.INVISIBLE
     }
 }
 

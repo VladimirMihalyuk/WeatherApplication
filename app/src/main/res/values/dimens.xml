@@ -6,4 +6,5 @@
     <dimen name="small_icon_text_size">18sp</dimen>
     <dimen name="width_of_line">160dp</dimen>
     <dimen name="size_of_list_icon">56dp</dimen>
+    <dimen name="toolbar_text_size">22sp</dimen>
 </resources>

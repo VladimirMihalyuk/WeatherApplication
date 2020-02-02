@@ -6,6 +6,7 @@ import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -14,23 +15,31 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapplication.forecast.ForecastFragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import io.reactivex.subjects.PublishSubject
 import androidx.appcompat.app.AlertDialog
 import android.provider.Settings
+import android.util.Log
 import android.view.View
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import permissions.dispatcher.*
 
+
+
 @RuntimePermissions
 class MainActivity : AppCompatActivity() {
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val listOfFragment = listOf(TodayFragment(),
+    private val listOfFragment = listOf<Fragment>(TodayFragment(),
         ForecastFragment()
     )
+
+    private val listOfTitles = mutableListOf("Today", "Today")
+
+    fun updateTitle(string: String){
+        listOfTitles[1] = string
+    }
 
     private val tabTitles = listOf("Today", "Forecast")
     private val tabIcons = listOf(R.drawable.wb_sunny_24px, R.drawable.weather_partly_rainy)
@@ -50,6 +59,12 @@ class MainActivity : AppCompatActivity() {
 
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                toolbar_title.setText(listOfTitles[position])
+            }
+        })
 
 
         TabLayoutMediator(tabs, viewPager) { tab, position ->
@@ -71,24 +86,18 @@ class MainActivity : AppCompatActivity() {
         swipeLayout.isRefreshing = false
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION  )
     fun getLocationFromService(){
         if(isLocationAvailable(this)){
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
             location = fusedLocationClient.lastLocation
         } else {
             showSnackBar()
         }
-
     }
 
-
-
-
-
     @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
-    fun showRationaleForPhoneCall(request: PermissionRequest) {
+    fun showRationale(request: PermissionRequest) {
         AlertDialog.Builder(this)
             .setTitle("Geolocation permission")
             .setMessage("Need your location for work")
@@ -133,13 +142,14 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         getLocationFromServiceWithPermissionCheck()
+        refreshingEvents.onNext(true)
     }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         onRequestPermissionsResult(requestCode, grantResults)
+        refreshingEvents.onNext(true)
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
