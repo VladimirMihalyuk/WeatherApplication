@@ -1,7 +1,6 @@
 package com.example.weatherapplication.todayWeather
 
 import android.location.Location
-import android.util.Log
 import com.example.weatherapplication.BasePresenter
 import com.example.weatherapplication.isInternetAvailable
 import com.example.weatherapplication.kelvinToCelsius
@@ -17,33 +16,45 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
     private var currentWeather: CurrentWeather? = null
 
     private val client = WeatherAPIClient.getClient()
+
     fun loadCurrentWeather(task: Task<Location>?){
+        loadData(task,  { view?.stopShowLoadingScreen()}, {})
+    }
+
+    fun updateCurrentWeather(task: Task<Location>?){
+        loadData(task,  {view?.stopShowUpdating(); view?.stopShowLoadingScreen() },
+            {view?.stopShowUpdating()})
+    }
+
+    private fun loadData(task: Task<Location>?,  stopShowLoading: () -> Unit,
+                         stopShowOnError: () -> Unit){
         if(isInternetAvailable(view?.getContextOfView())){
             task?.let{
                 task.addOnSuccessListener {location ->
                     if(location != null){
+
                         client.getCurrentWeather(location.longitude.toFloat(), location.latitude.toFloat())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                 { weather ->
                                     view?.fillViews(weather)
-                                    currentWeather = weather },
+                                    currentWeather = weather
+                                    stopShowLoading()
+                                },
                                 { error ->
-                                    view?.showErrorMessage("Server error") }
+                                    view?.showErrorMessage("Server error")
+                                }
                             )
                     }else{
                         view?.showErrorMessage("Probably the GPS can not locate you")
                     }
-
                 }
             }
-
         } else {
             view?.showErrorMessage("Please turn on internet connection and try again")
         }
-        view?.stopShowLoading()
-
+        stopShowOnError()
     }
 
     fun shareAsText(){

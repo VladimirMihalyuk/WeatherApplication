@@ -3,12 +3,14 @@ package com.example.weatherapplication.todayWeather
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.weatherapplication.*
@@ -26,8 +28,7 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
-
-
+    lateinit var loading: FrameLayout
     private lateinit var presenter: TodayPresenter
 
     override fun onCreateView(
@@ -44,6 +45,7 @@ class TodayFragment : Fragment(), TodayView {
         windSpeed = view.findViewById(R.id.windSpeed)
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
+        loading = view.findViewById(R.id.loading)
 
 
         presenter = TodayPresenter(this)
@@ -56,13 +58,32 @@ class TodayFragment : Fragment(), TodayView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        startShowLoadingScreen()
         presenter.loadCurrentWeather((activity as MainActivity).location)
+
         (activity as MainActivity).refreshingEvents.subscribe{it ->
-            if(it){presenter.loadCurrentWeather((activity as MainActivity).location) }}
+            if(it){presenter.updateCurrentWeather((activity as MainActivity).location) }}
     }
 
     override fun showErrorMessage(text: String) {
         Snackbar.make(bigPicture, text, Snackbar.LENGTH_LONG).show()
+    }
+
+
+
+    override fun shareAsText(text: String){
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
+    override fun getContextOfView(): Context? {
+        return super.getContext()
     }
 
     override fun fillViews(currentWeather: CurrentWeather){
@@ -85,27 +106,21 @@ class TodayFragment : Fragment(), TodayView {
         windDirection.text = "${windDegreeToDirection(currentWeather.wind?.deg ?: 0)}"
     }
 
-    override fun shareAsText(text: String){
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = "text/plain"
-        }
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        startActivity(shareIntent)
-    }
-
-    override fun getContextOfView(): Context? {
-        return super.getContext()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter.onDestroy()
     }
 
-    override fun stopShowLoading() {
+    override fun stopShowUpdating() {
         (activity as MainActivity).stopShowingRefreshing()
+    }
 
+    override fun startShowLoadingScreen() {
+        loading.visibility = View.VISIBLE
+
+    }
+
+    override fun stopShowLoadingScreen() {
+        loading.visibility = View.INVISIBLE
     }
 }

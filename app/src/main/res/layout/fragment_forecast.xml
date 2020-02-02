@@ -12,4 +12,20 @@
         android:id="@+id/list"
         tools:listitem="@layout/list_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <FrameLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/white">
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 </FrameLayout>

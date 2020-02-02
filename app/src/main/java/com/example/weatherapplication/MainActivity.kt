@@ -6,6 +6,7 @@ import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -25,12 +26,12 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import permissions.dispatcher.*
 
+
+
 @RuntimePermissions
 class MainActivity : AppCompatActivity() {
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationInterractor: LocationDeviceInteractor
-    private val listOfFragment = listOf(TodayFragment(),
+    private val listOfFragment = listOf<Fragment>(TodayFragment(),
         ForecastFragment()
     )
 
@@ -65,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        locationInterractor = LocationDeviceInteractor(this)
 
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             tab.text = tabTitles[position]
@@ -80,35 +80,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         getLocationFromServiceWithPermissionCheck()
-
-
-        locationInterractor.getLocation().subscribe(
-            {
-                    location -> Log.d("WTF", "Location: $location")
-            },
-            {
-                    it -> Log.d("WTF", "Error: $it")
-            }
-        )
     }
 
     fun stopShowingRefreshing() {
         swipeLayout.isRefreshing = false
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION  )
     fun getLocationFromService(){
         if(isLocationAvailable(this)){
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             location = fusedLocationClient.lastLocation
-
-
-
-
         } else {
             showSnackBar()
         }
-
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
