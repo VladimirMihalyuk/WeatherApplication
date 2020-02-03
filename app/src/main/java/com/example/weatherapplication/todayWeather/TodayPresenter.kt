@@ -6,8 +6,7 @@ import com.example.weatherapplication.isInternetAvailable
 import com.example.weatherapplication.kelvinToCelsius
 import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.network.data.CurrentWeather
-import com.google.android.gms.tasks.Task
-
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -17,39 +16,45 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
 
     private val client = WeatherAPIClient.getClient()
 
-    fun loadCurrentWeather(task: Task<Location>?){
-        loadData(task,  { view?.stopShowLoadingScreen()}, {})
+    fun loadCurrentWeather(single: Single<Location>?){
+        loadData(single,  { view?.stopShowLoadingScreen()}, {})
     }
 
-    fun updateCurrentWeather(task: Task<Location>?){
-        loadData(task,  {view?.stopShowUpdating(); view?.stopShowLoadingScreen() },
+    fun updateCurrentWeather(single: Single<Location>?){
+        loadData(single,  {view?.stopShowUpdating(); view?.stopShowLoadingScreen() },
             {view?.stopShowUpdating()})
     }
 
-    private fun loadData(task: Task<Location>?,  stopShowLoading: () -> Unit,
+    private fun loadData(single: Single<Location>?,  stopShowLoading: () -> Unit,
                          stopShowOnError: () -> Unit){
         if(isInternetAvailable(view?.getContextOfView())){
-            task?.let{
-                task.addOnSuccessListener {location ->
-                    if(location != null){
+            single?.let{
+                single.subscribe(
+                    { location ->
+                        if(location != null){
 
-                        client.getCurrentWeather(location.longitude.toFloat(), location.latitude.toFloat())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                { weather ->
-                                    view?.fillViews(weather)
-                                    currentWeather = weather
-                                    stopShowLoading()
-                                },
-                                { error ->
-                                    view?.showErrorMessage("Server error")
-                                }
-                            )
-                    }else{
+                            client.getCurrentWeather(location.longitude.toFloat(), location.latitude.toFloat())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    { weather ->
+                                        view?.fillViews(weather)
+                                        currentWeather = weather
+                                        stopShowLoading()
+                                    },
+                                    { error ->
+                                        view?.showErrorMessage("Server error")
+                                    }
+                                )
+                        }else{
+                            view?.showErrorMessage("Probably the GPS can not locate you")
+                        }
+                    },
+                    {
+                        _ ->
                         view?.showErrorMessage("Probably the GPS can not locate you")
                     }
-                }
+                )
             }
         } else {
             view?.showErrorMessage("Please turn on internet connection and try again")
