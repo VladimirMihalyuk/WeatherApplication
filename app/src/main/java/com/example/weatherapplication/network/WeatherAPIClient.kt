@@ -13,6 +13,7 @@ private val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 
 class WeatherAPIClient{
     companion object{
+        @Volatile
         private var INSTANCE:OpenWeatherMapAPI? = null
 
         fun getClient():OpenWeatherMapAPI{

@@ -15,7 +15,6 @@ class DefaultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     init {
         findViewItems(itemView)
-        Log.d("WTF", "$viewMap")
     }
 
 
@@ -31,7 +30,6 @@ class DefaultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun setHeader(string: String){
-        Log.d("WTF", "${R.id.header}" )
         val text = viewMap[R.id.header] as TextView
         text.text = string
     }

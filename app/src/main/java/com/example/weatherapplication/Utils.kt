@@ -7,6 +7,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
+import com.example.weatherapplication.database.Today
+import com.example.weatherapplication.network.data.CurrentWeather
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,4 +77,31 @@ fun isLocationAvailable(context: Context?): Boolean {
         }
     }
     return result
+}
+
+fun CurrentWeather.toDatabaseObject(): Today{
+    val image = "i" + (this.weather?.getOrNull(0)?.icon ?: "01d")
+    val  city = "${this.name}, ${this.sys?.country}"
+    val temperatureValue = this.main?.temp?.kelvinToCelsius() ?: 0
+    val temperature = "${temperatureValue}°C |${this.weather?.getOrNull(0)?.main}"
+    val cloudiness = "${(this.main?.humidity ?: 0)}%"
+
+    val precipitationValue = ((this.snow?.threeHours ?:0.0) +
+            (this.rain?.threeHours ?: 0.0))
+    val precipitation = "${Math.round(precipitationValue * 10.0) / 10.0 } mm"
+    val pressure =  "${this.main?.pressure} hPa"
+    val speedValue = ((this.wind?.speed ?: 0.0) * 3.6).toInt()
+    val windSpeed = "${speedValue} km/h"
+    val windDirection = "${windDegreeToDirection(this.wind?.deg ?: 0)}"
+    val today = Today(
+        image,
+        city,
+        temperature,
+        cloudiness,
+        precipitation,
+        pressure,
+        windSpeed,
+        windDirection
+    )
+    return today
 }
