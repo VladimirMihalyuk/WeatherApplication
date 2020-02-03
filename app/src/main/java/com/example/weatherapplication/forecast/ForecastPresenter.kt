@@ -111,10 +111,12 @@ class ForecastPresenter(private var view: ForecastView?) : BasePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { result->
-                        val list
-                                = result.filter { it.date >  Calendar.getInstance().time }
-                        view?.updateList(list.toListOfForecastModels().toListWithHeaders())
-                        stopShowLoading()
+                        if(result.isNotEmpty()){
+                            val list
+                                    = result.filter { it.date >  Calendar.getInstance().time }
+                            view?.updateList(list.toListOfForecastModels().toListWithHeaders())
+                            stopShowLoading()
+                        }
                     },
                     {it ->
                         Log.d("ERROR", "$it")
