@@ -3,9 +3,7 @@ package com.example.weatherapplication.todayWeather
 
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.weatherapplication.*
-import com.example.weatherapplication.network.data.CurrentWeather
+import com.example.weatherapplication.database.Today
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_today.view.*
 
@@ -23,7 +21,7 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var bigPicture: ImageView
     lateinit var city: TextView
     lateinit var temperature: TextView
-    lateinit var humidity: TextView
+    lateinit var cloudiness: TextView
     lateinit var windDirection: TextView
     lateinit var windSpeed: TextView
     lateinit var precipitation: TextView
@@ -40,7 +38,7 @@ class TodayFragment : Fragment(), TodayView {
         bigPicture = view.findViewById(R.id.bigPicture)
         city = view.findViewById(R.id.city)
         temperature = view.findViewById(R.id.temperature)
-        humidity = view.findViewById(R.id.cloudness)
+        cloudiness = view.findViewById(R.id.cloudness)
         windDirection = view.findViewById(R.id.windDirection)
         windSpeed = view.findViewById(R.id.windSpeed)
         precipitation  = view.findViewById(R.id.precipitation)
@@ -86,24 +84,19 @@ class TodayFragment : Fragment(), TodayView {
         return super.getContext()
     }
 
-    override fun fillViews(currentWeather: CurrentWeather){
+    override fun fillViews(today: Today){
         val resourceId = context?.resources?.
-            getIdentifier("i" + (currentWeather.weather?.getOrNull(0)?.icon ?: "01d"),
-                "drawable", context?.packageName)!!
+            getIdentifier(today.image, "drawable", context?.packageName)!!
         bigPicture.setImageResource(resourceId)
-        (activity as MainActivity).updateTitle(currentWeather.name ?: "")
-        city.text = "${currentWeather.name}, ${currentWeather?.sys?.country}"
-        val temperatureValue = currentWeather.main?.temp?.kelvinToCelsius() ?: 0
-        temperature.text = "${temperatureValue}°C |${currentWeather.weather?.getOrNull(0)?.main}"
-        humidity.text = "${currentWeather.main?.humidity}%"
-
-        val precipitationValue = ((currentWeather.snow?.threeHours ?:0.0) +
-                (currentWeather.rain?.threeHours ?: 0.0))
-        precipitation.text = "${Math.round(precipitationValue * 10.0) / 10.0 } mm"
-        pressure.text =  "${currentWeather.main?.pressure} hPa"
-        var speedValue = ((currentWeather.wind?.speed ?: 0.0) * 3.6).toInt()
-        windSpeed.text = "${speedValue} km/h"
-        windDirection.text = "${windDegreeToDirection(currentWeather.wind?.deg ?: 0)}"
+        val cityName = today.city.substring(0, today.city.indexOf(","))
+        (activity as MainActivity).updateTitle(cityName)
+        city.text = today.city
+        temperature.text = today.temperature
+        cloudiness.text = today.cloudiness
+        precipitation.text = today.precipitation
+        pressure.text =  today.pressure
+        windSpeed.text = today.windSpeed
+        windDirection.text = today.windDirection
     }
 
     override fun onDestroy() {

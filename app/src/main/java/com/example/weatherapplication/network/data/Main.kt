@@ -10,7 +10,7 @@ data class Main(
 	@field:SerializedName("temp_min")
 	val tempMin: Double? = null,
 
-	@field:SerializedName("humidity")
+	@field:SerializedName("cloudiness")
 	val humidity: Int? = null,
 
 	@field:SerializedName("pressure")

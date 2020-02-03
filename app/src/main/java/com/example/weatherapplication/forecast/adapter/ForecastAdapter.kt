@@ -43,7 +43,6 @@ class ForecastAdapter(private var list: MutableList<ForecastListItem>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DefaultViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        Log.d("WTF", "$viewType")
         val inflatedView : View = when (viewType) {
             RowType.ELEMENT.ordinal -> layoutInflater.inflate(R.layout.list_item, parent,false)
             else -> layoutInflater.inflate(R.layout.header_of_list_item, parent,false)

@@ -26,6 +26,8 @@ android {
 }
 
 dependencies {
+    def room_version = "2.2.3"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -68,6 +70,9 @@ dependencies {
     //location service
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
-
+    //room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
 }

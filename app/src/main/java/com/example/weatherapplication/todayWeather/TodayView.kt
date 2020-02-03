@@ -1,11 +1,10 @@
 package com.example.weatherapplication.todayWeather
 
-import android.content.Context
 import com.example.weatherapplication.BaseView
-import com.example.weatherapplication.network.data.CurrentWeather
+import com.example.weatherapplication.database.Today
 
 interface TodayView: BaseView {
-    fun fillViews(currentWeather: CurrentWeather)
+    fun fillViews(today: Today)
 
     fun shareAsText(text: String)
 }
