@@ -14,6 +14,7 @@ import com.example.weatherapplication.network.data.CurrentWeather
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 fun Double?.kelvinToCelsius() = (this?.toInt() ?: 273) - 273
@@ -86,11 +87,11 @@ fun CurrentWeather.toDatabaseObject(): Today{
     val  city = "${this.name}, ${this.sys?.country}"
     val temperatureValue = this.main?.temp?.kelvinToCelsius() ?: 0
     val temperature = "${temperatureValue}°C |${this.weather?.getOrNull(0)?.main}"
-    val cloudiness = "${(this.main?.humidity ?: 0)}%"
+    val cloudiness = "${(this.clouds?.all ?: 0)}%"
 
     val precipitationValue = ((this.snow?.threeHours ?:0.0) +
             (this.rain?.threeHours ?: 0.0))
-    val precipitation = "${Math.round(precipitationValue * 10.0) / 10.0 } mm"
+    val precipitation = "${(precipitationValue * 10.0).roundToInt() / 10.0 } mm"
     val pressure =  "${this.main?.pressure} hPa"
     val speedValue = ((this.wind?.speed ?: 0.0) * 3.6).toInt()
     val windSpeed = "${speedValue} km/h"
