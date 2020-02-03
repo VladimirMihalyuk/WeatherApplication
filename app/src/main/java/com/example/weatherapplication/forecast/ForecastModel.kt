@@ -1,9 +1,8 @@
 package com.example.weatherapplication.forecast
 
 import com.example.weatherapplication.convertToDate
-import com.example.weatherapplication.getDayOfWeek
 import com.example.weatherapplication.kelvinToCelsius
-import com.example.weatherapplication.network.data.Forecast
+import com.example.weatherapplication.network.data.ForecastNetwork
 import java.util.*
 
 data class ForecastModel(
@@ -15,7 +14,7 @@ data class ForecastModel(
 
     val degree: Int)
 
-fun Forecast.toListOfModels(): List<ForecastModel>{
+fun ForecastNetwork.toListOfModels(): List<ForecastModel>{
     val mutableList = mutableListOf<ForecastModel>()
     this.list?.let {
         for(item in list){

@@ -7,7 +7,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
+import com.example.weatherapplication.database.Forecast
 import com.example.weatherapplication.database.Today
+import com.example.weatherapplication.forecast.ForecastModel
 import com.example.weatherapplication.network.data.CurrentWeather
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -105,3 +107,18 @@ fun CurrentWeather.toDatabaseObject(): Today{
     )
     return today
 }
+
+fun List<Forecast>.toListOfForecastModels(): List<ForecastModel>
+        = this.map{it -> ForecastModel(
+        it.date,
+        it.icon,
+        it.description,
+        it.degree)}
+
+
+fun List<ForecastModel>.toListOfForecast(): List<Forecast> =
+    this.map{it -> Forecast(
+        date = it.date,
+        icon = it.icon,
+        description = it.description,
+        degree = it.degree)}

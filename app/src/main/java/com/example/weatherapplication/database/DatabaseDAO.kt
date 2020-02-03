@@ -16,4 +16,13 @@ interface DatabaseDAO {
 
     @Query("DELETE FROM Today")
     fun deleteToday(): Completable
+
+    @Insert
+    fun insertForecast(forecast: List<Forecast>): Completable
+
+    @Query("SELECT * FROM Forecast")
+    fun getForecast():Maybe<List<Forecast>>
+
+    @Query("DELETE FROM Forecast")
+    fun deleteForecast(): Completable
 }

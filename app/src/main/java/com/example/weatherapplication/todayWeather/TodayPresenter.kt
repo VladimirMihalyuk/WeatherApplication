@@ -106,16 +106,11 @@ class TodayPresenter(private var view: TodayView?) : BasePresenter {
                         .subscribeOn(Schedulers.io())
                         .subscribe(
                             { },
-                            {it ->
-                                Log.d("ERROR", "$it")
-                            }
-                        )
+                            {it -> Log.d("ERROR", "$it") })
                 }
                 .subscribe(
                     { },
-                    {it ->
-                    Log.d("ERROR", "$it") }
-                )
+                    {it -> Log.d("ERROR", "$it") })
         }
     }
     private fun loadFromDatabase(stopShowLoading: () -> Unit){
