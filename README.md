@@ -1,6 +1,7 @@
 # WeatherApplication
 Test task.
 Worked with:
+- Kotlin
 - Material design
 - MVP
 - RxJava(async operations)
