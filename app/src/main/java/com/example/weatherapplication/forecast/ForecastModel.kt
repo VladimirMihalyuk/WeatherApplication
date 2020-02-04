@@ -1,7 +1,7 @@
 package com.example.weatherapplication.forecast
 
-import com.example.weatherapplication.convertToDate
-import com.example.weatherapplication.kelvinToCelsius
+import com.example.weatherapplication.utils.convertToDate
+import com.example.weatherapplication.utils.kelvinToCelsius
 import com.example.weatherapplication.network.data.ForecastNetwork
 import java.util.*
 

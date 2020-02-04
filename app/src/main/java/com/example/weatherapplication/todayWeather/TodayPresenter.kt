@@ -2,20 +2,19 @@ package com.example.weatherapplication.todayWeather
 
 import android.location.Location
 import android.util.Log
-import com.example.weatherapplication.BasePresenter
+import com.example.weatherapplication.interfaces.BasePresenter
 import com.example.weatherapplication.database.DatabaseDAO
 import com.example.weatherapplication.database.MyDatabase
 import com.example.weatherapplication.database.Today
-import com.example.weatherapplication.isInternetAvailable
-import com.example.weatherapplication.kelvinToCelsius
+import com.example.weatherapplication.utils.isInternetAvailable
 import com.example.weatherapplication.network.WeatherAPIClient
-import com.example.weatherapplication.network.data.CurrentWeather
-import com.example.weatherapplication.toDatabaseObject
+import com.example.weatherapplication.utils.toDatabaseObject
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class TodayPresenter(private var view: TodayView?) : BasePresenter {
+class TodayPresenter(private var view: TodayView?) :
+    BasePresenter {
 
     private var today: Today? = null
 

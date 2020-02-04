@@ -1,4 +1,4 @@
-package com.example.weatherapplication
+package com.example.weatherapplication.activity
 
 import android.Manifest
 import android.content.Intent
@@ -19,6 +19,9 @@ import androidx.appcompat.app.AlertDialog
 import android.provider.Settings
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
+import com.example.weatherapplication.R
+import com.example.weatherapplication.utils.LocationDeviceInteractor
+import com.example.weatherapplication.utils.isLocationAvailable
 import com.google.android.material.snackbar.Snackbar
 import permissions.dispatcher.*
 import io.reactivex.Single
@@ -41,7 +44,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val tabTitles = listOf("Today", "Forecast")
-    private val tabIcons = listOf(R.drawable.wb_sunny_24px, R.drawable.weather_partly_rainy)
+    private val tabIcons = listOf(
+        R.drawable.wb_sunny_24px,
+        R.drawable.weather_partly_rainy
+    )
 
 
     private lateinit var swipeLayout:SwipeRefreshLayout

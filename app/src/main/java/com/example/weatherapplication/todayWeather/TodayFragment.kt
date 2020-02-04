@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.weatherapplication.*
+import com.example.weatherapplication.activity.MainActivity
 import com.example.weatherapplication.database.Today
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_today.view.*
@@ -60,7 +61,7 @@ class TodayFragment : Fragment(), TodayView {
         startShowLoadingScreen()
         presenter.loadCurrentWeather((activity as MainActivity).location)
 
-        (activity as MainActivity).refreshingEvents.subscribe{it ->
+        (activity as MainActivity).refreshingEvents.subscribe{ it ->
             if(it){presenter.updateCurrentWeather((activity as MainActivity).location) }}
     }
 

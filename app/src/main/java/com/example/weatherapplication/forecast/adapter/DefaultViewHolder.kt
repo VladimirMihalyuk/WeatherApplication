@@ -1,6 +1,5 @@
 package com.example.weatherapplication.forecast.adapter
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -8,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.R
 import com.example.weatherapplication.forecast.ForecastModel
-import com.example.weatherapplication.getHoursAsString
+import com.example.weatherapplication.utils.getHoursAsString
 
 class DefaultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val viewMap: MutableMap<Int, View> = HashMap()

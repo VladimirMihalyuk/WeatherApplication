@@ -1,17 +1,15 @@
-package com.example.weatherapplication
+package com.example.weatherapplication.utils
 
 
 import android.content.Context
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.wifi.WifiManager
 import android.os.Build
 import com.example.weatherapplication.database.Forecast
 import com.example.weatherapplication.database.Today
 import com.example.weatherapplication.forecast.ForecastModel
 import com.example.weatherapplication.network.data.CurrentWeather
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -95,7 +93,9 @@ fun CurrentWeather.toDatabaseObject(): Today{
     val pressure =  "${this.main?.pressure} hPa"
     val speedValue = ((this.wind?.speed ?: 0.0) * 3.6).toInt()
     val windSpeed = "${speedValue} km/h"
-    val windDirection = "${windDegreeToDirection(this.wind?.deg ?: 0)}"
+    val windDirection = "${windDegreeToDirection(
+        this.wind?.deg ?: 0
+    )}"
     val today = Today(
         image,
         city,

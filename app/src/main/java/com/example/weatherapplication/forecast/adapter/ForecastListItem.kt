@@ -1,7 +1,7 @@
 package com.example.weatherapplication.forecast.adapter
 
 import com.example.weatherapplication.forecast.ForecastModel
-import com.example.weatherapplication.getDayOfWeek
+import com.example.weatherapplication.utils.getDayOfWeek
 
 enum class RowType {
     ELEMENT,

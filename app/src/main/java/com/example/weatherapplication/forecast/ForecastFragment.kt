@@ -9,16 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherapplication.MainActivity
+import com.example.weatherapplication.activity.MainActivity
 import com.example.weatherapplication.R
 import com.example.weatherapplication.forecast.adapter.ForecastAdapter
 import com.example.weatherapplication.forecast.adapter.ForecastListItem
-import com.example.weatherapplication.forecast.adapter.toListWithHeaders
-import com.example.weatherapplication.network.WeatherAPIClient
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_forecast.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -55,7 +50,7 @@ class ForecastFragment : Fragment(), ForecastView {
         startShowLoadingScreen()
         presenter.loadCurrentWeather((activity as MainActivity).location)
 
-        (activity as MainActivity).refreshingEvents.subscribe{it ->
+        (activity as MainActivity).refreshingEvents.subscribe{ it ->
             if(it){presenter.updateCurrentWeather((activity as MainActivity).location)  }}
 
     }

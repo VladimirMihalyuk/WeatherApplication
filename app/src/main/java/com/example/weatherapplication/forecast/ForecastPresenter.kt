@@ -2,22 +2,23 @@ package com.example.weatherapplication.forecast
 
 import android.location.Location
 import android.util.Log
-import com.example.weatherapplication.BasePresenter
+import com.example.weatherapplication.interfaces.BasePresenter
 import com.example.weatherapplication.database.DatabaseDAO
 import com.example.weatherapplication.database.Forecast
 import com.example.weatherapplication.database.MyDatabase
 import com.example.weatherapplication.forecast.adapter.toListWithHeaders
-import com.example.weatherapplication.isInternetAvailable
+import com.example.weatherapplication.utils.isInternetAvailable
 import com.example.weatherapplication.network.WeatherAPIClient
-import com.example.weatherapplication.toListOfForecast
-import com.example.weatherapplication.toListOfForecastModels
+import com.example.weatherapplication.utils.toListOfForecast
+import com.example.weatherapplication.utils.toListOfForecastModels
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
-class ForecastPresenter(private var view: ForecastView?) : BasePresenter {
+class ForecastPresenter(private var view: ForecastView?) :
+    BasePresenter {
 
     private val client = WeatherAPIClient.getClient()
 
