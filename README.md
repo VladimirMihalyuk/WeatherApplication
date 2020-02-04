@@ -1,5 +1,5 @@
 # WeatherApplication
-Test task
+Test task.
 Worked with:
 - Material design
 - RxJava(async operations)
