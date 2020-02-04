@@ -2,6 +2,7 @@
 Test task.
 Worked with:
 - Material design
+- MVP
 - RxJava(async operations)
 - Retrofit(network calls)
 - SwipeRefreshLayout(to support swipe to refresh content)
