@@ -51,7 +51,6 @@ fun isInternetAvailable(context: Context?): Boolean {
             }
         }
     }
-
     return result
 }
 

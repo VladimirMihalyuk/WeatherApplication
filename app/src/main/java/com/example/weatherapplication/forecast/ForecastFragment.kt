@@ -11,9 +11,11 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.activity.MainActivity
 import com.example.weatherapplication.R
+import com.example.weatherapplication.WeatherApplication
 import com.example.weatherapplication.forecast.adapter.ForecastAdapter
 import com.example.weatherapplication.forecast.adapter.ForecastListItem
 import com.google.android.material.snackbar.Snackbar
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
@@ -21,9 +23,11 @@ import com.google.android.material.snackbar.Snackbar
 class ForecastFragment : Fragment(), ForecastView {
 
 
+    @Inject
+    lateinit var presenter: ForecastPresenter
+
     val startList = mutableListOf<ForecastListItem>()
     private lateinit var adapter: ForecastAdapter
-    private lateinit var presenter: ForecastPresenter
     lateinit var list: RecyclerView
     lateinit var loading:FrameLayout
 
@@ -33,11 +37,16 @@ class ForecastFragment : Fragment(), ForecastView {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_forecast, container, false)
 
+
+        ((activity as MainActivity).application as WeatherApplication)
+            .appComponent.inject(this)
+        presenter.setView(this)
+
         list = view.findViewById(R.id.list)
         loading = view.findViewById(R.id.loading)
 
         adapter = ForecastAdapter(startList, context!!)
-        presenter = ForecastPresenter(this)
+
 
         list.adapter = adapter
         return view

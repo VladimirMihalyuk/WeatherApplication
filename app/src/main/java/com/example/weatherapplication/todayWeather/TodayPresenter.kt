@@ -6,28 +6,24 @@ import com.example.weatherapplication.interfaces.BasePresenter
 import com.example.weatherapplication.database.DatabaseDAO
 import com.example.weatherapplication.database.MyDatabase
 import com.example.weatherapplication.database.Today
+import com.example.weatherapplication.network.OpenWeatherMapAPI
 import com.example.weatherapplication.utils.isInternetAvailable
 import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.utils.toDatabaseObject
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class TodayPresenter(private var view: TodayView?) :
-    BasePresenter {
+class TodayPresenter @Inject constructor (private val client: OpenWeatherMapAPI,
+                                          private val database: DatabaseDAO) : BasePresenter {
+
+    private var view: TodayView? = null
+    fun setView(view: TodayView){
+        this.view = view
+    }
 
     private var today: Today? = null
-
-    private val client = WeatherAPIClient.getClient()
-
-    private var database:DatabaseDAO? = null
-
-    init{
-        view?.getContextOfView()?.let{
-            database = MyDatabase.getInstance(it).databaseDao
-        }
-
-    }
 
     fun loadCurrentWeather(single: Single<Location>?){
         loadData(single,  { view?.stopShowLoadingScreen()}, {}, true)
@@ -51,7 +47,7 @@ class TodayPresenter(private var view: TodayView?) :
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(
                                     { weather ->
-                                        val todayWeather = weather.toDatabaseObject()
+                                        val todayWeather: Today = weather.toDatabaseObject()
                                         view?.fillViews(todayWeather)
                                         loadToDatabase(todayWeather)
                                         today = todayWeather
@@ -97,7 +93,7 @@ class TodayPresenter(private var view: TodayView?) :
     }
 
     private fun loadToDatabase(today: Today){
-        database?.let {
+        database.let {
             it.deleteToday()
                 .subscribeOn(Schedulers.io())
                 .doOnComplete {
@@ -113,7 +109,7 @@ class TodayPresenter(private var view: TodayView?) :
         }
     }
     private fun loadFromDatabase(stopShowLoading: () -> Unit){
-        database?.let {
+        database.let {
             it.getToday()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

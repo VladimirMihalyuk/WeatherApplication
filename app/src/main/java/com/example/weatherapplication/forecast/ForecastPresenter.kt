@@ -5,32 +5,28 @@ import android.util.Log
 import com.example.weatherapplication.interfaces.BasePresenter
 import com.example.weatherapplication.database.DatabaseDAO
 import com.example.weatherapplication.database.Forecast
-import com.example.weatherapplication.database.MyDatabase
 import com.example.weatherapplication.forecast.adapter.toListWithHeaders
+import com.example.weatherapplication.network.OpenWeatherMapAPI
 import com.example.weatherapplication.utils.isInternetAvailable
-import com.example.weatherapplication.network.WeatherAPIClient
 import com.example.weatherapplication.utils.toListOfForecast
 import com.example.weatherapplication.utils.toListOfForecastModels
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
 
 
-class ForecastPresenter(private var view: ForecastView?) :
-    BasePresenter {
-
-    private val client = WeatherAPIClient.getClient()
+class ForecastPresenter @Inject constructor (private val client: OpenWeatherMapAPI,
+                                              private val database: DatabaseDAO) : BasePresenter {
 
 
-    private var database: DatabaseDAO? = null
+    private var view: ForecastView? = null
 
-    init{
-        view?.getContextOfView()?.let{
-            database = MyDatabase.getInstance(it).databaseDao
-        }
-
+    fun setView(view:ForecastView){
+        this.view = view
     }
+
 
     fun loadCurrentWeather(single: Single<Location>?){
         loadData(single,  { view?.stopShowLoadingScreen()}, {}, true)
