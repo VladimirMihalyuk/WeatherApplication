@@ -5,6 +5,7 @@ Worked with:
 - Material design
 - MVP
 - RxJava(async operations)
+- Dagger2
 - Retrofit(network calls)
 - SwipeRefreshLayout(to support swipe to refresh content)
 - Room(offline cashing)
