@@ -46,7 +46,6 @@ fun isInternetAvailable(context: Context?): Boolean {
                         ConnectivityManager.TYPE_ETHERNET -> true
                         else -> false
                     }
-
                 }
             }
         }
@@ -58,8 +57,6 @@ val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
 fun String.convertToDate(): Date = format.parse(this)!!
 
-
-//need to note hardcode lcoale
 val sdf = SimpleDateFormat("EEEE", Locale("en"))
 fun Date.getDayOfWeek(): String = sdf.format(this ).toUpperCase()
 

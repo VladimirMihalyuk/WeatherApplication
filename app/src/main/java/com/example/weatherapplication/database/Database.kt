@@ -14,14 +14,12 @@ abstract class MyDatabase  : RoomDatabase() {
     abstract val databaseDao: DatabaseDAO
 
     companion object{
-        fun getInstance(application: Application): MyDatabase {
-            Log.d("WTF", "CREATE DB")
-            return Room.databaseBuilder(
+        fun getInstance(application: Application)=
+            Room.databaseBuilder(
                 application.applicationContext,
                 MyDatabase::class.java,
                 "Database.db")
                 .fallbackToDestructiveMigration()
                 .build()
-        }
     }
 }

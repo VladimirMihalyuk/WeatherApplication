@@ -58,7 +58,7 @@ class ForecastPresenter @Inject constructor (private val client: OpenWeatherMapA
                                         loadToDatabase(listFromNetwork.toListOfForecast())
                                         stopShowLoading()
                                     },
-                                    { error ->
+                                    { _ ->
                                         view?.showErrorMessage("Server error") }
                                 )
                         }else{
@@ -86,7 +86,7 @@ class ForecastPresenter @Inject constructor (private val client: OpenWeatherMapA
 
 
     private fun loadToDatabase(list: List<Forecast>){
-        database?.let {
+        database.let {
             it.deleteForecast()
                 .subscribeOn(Schedulers.io())
                 .doOnComplete {
@@ -102,7 +102,7 @@ class ForecastPresenter @Inject constructor (private val client: OpenWeatherMapA
         }
     }
     private fun loadFromDatabase(stopShowLoading: () -> Unit){
-        database?.let {
+        database.let {
             it.getForecast()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

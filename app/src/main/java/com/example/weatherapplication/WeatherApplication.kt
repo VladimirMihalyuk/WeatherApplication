@@ -17,7 +17,6 @@ class WeatherApplication : Application() {
 
     private fun initDagger(app: Application): AppComponent =
         DaggerAppComponent.builder()
-            .application(this)
+            .application(app)
             .build()
-
 }

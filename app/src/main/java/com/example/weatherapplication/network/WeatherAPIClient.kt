@@ -26,23 +26,15 @@ class WeatherAPIClient{
         }
 
 
-        fun provideApi(okHttpClient: OkHttpClient):OpenWeatherMapAPI{
-            Log.d("WTF", "CREATE Client")
-            return Retrofit.Builder()
+        fun provideApi(okHttpClient: OkHttpClient): OpenWeatherMapAPI =
+            Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .build()
                 .create(OpenWeatherMapAPI::class.java)
-        }
-
-
     }
-
-
-
-
 }
 
 

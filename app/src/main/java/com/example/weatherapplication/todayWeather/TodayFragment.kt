@@ -56,9 +56,6 @@ class TodayFragment : Fragment(), TodayView {
         pressure = view.findViewById(R.id.pressure)
         loading = view.findViewById(R.id.loading)
 
-
-//        presenter = TodayPresenter(this)
-
         view.share.setOnClickListener {
             presenter.shareAsText()
         }

@@ -37,7 +37,6 @@ class ForecastFragment : Fragment(), ForecastView {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_forecast, container, false)
 
-
         ((activity as MainActivity).application as WeatherApplication)
             .appComponent.inject(this)
         presenter.setView(this)
@@ -46,7 +45,6 @@ class ForecastFragment : Fragment(), ForecastView {
         loading = view.findViewById(R.id.loading)
 
         adapter = ForecastAdapter(startList, context!!)
-
 
         list.adapter = adapter
         return view

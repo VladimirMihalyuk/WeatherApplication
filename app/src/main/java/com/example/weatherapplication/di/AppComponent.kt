@@ -17,7 +17,7 @@ import dagger.BindsInstance
     DatabaseModule::class,
     PresentersModule::class
 ])
-public interface AppComponent {
+interface AppComponent {
     fun inject(target: TodayFragment);
 
     fun inject(target: ForecastFragment);
