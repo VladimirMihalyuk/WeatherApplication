@@ -14,10 +14,15 @@ import android.widget.TextView
 import com.example.weatherapplication.*
 import com.example.weatherapplication.activity.MainActivity
 import com.example.weatherapplication.database.Today
+import com.example.weatherapplication.forecast.ForecastPresenter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_today.view.*
+import javax.inject.Inject
 
 class TodayFragment : Fragment(), TodayView {
+
+    @Inject
+    lateinit var presenter: TodayPresenter
 
     lateinit var bigPicture: ImageView
     lateinit var city: TextView
@@ -28,13 +33,18 @@ class TodayFragment : Fragment(), TodayView {
     lateinit var precipitation: TextView
     lateinit var pressure: TextView
     lateinit var loading: FrameLayout
-    private lateinit var presenter: TodayPresenter
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_today, container, false)
+
+        ((activity as MainActivity).application as WeatherApplication)
+            .appComponent.inject(this)
+        presenter.setView(this)
+
 
         bigPicture = view.findViewById(R.id.bigPicture)
         city = view.findViewById(R.id.city)
@@ -45,9 +55,6 @@ class TodayFragment : Fragment(), TodayView {
         precipitation  = view.findViewById(R.id.precipitation)
         pressure = view.findViewById(R.id.pressure)
         loading = view.findViewById(R.id.loading)
-
-
-        presenter = TodayPresenter(this)
 
         view.share.setOnClickListener {
             presenter.shareAsText()
